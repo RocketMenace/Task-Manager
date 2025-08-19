@@ -3,6 +3,8 @@ from typing import Any, AsyncGenerator
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_async_engine
+from sqlalchemy.orm import declarative_base
+from .settings import settings
 
 
 class Database:
@@ -17,6 +19,7 @@ class Database:
             bind=self._async_engine,
             expire_on_commit=False,
         )
+        self.Base = declarative_base()
 
     @asynccontextmanager
     async def get_session(self) -> AsyncGenerator[AsyncSession, Any]:
@@ -29,3 +32,6 @@ class Database:
         finally:
             await session.commit()
             await session.close()
+
+
+database = Database(url=settings.db_url)
