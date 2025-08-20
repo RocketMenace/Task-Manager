@@ -5,7 +5,7 @@ from enum import Enum
 from .base import BaseModel
 
 
-class StatusType(Enum):
+class StatusType(str, Enum):
     CREATED = "Created"
     IN_PROGRESS = "In progress"
     COMPLETED = "Completed"
@@ -17,5 +17,5 @@ class Task(BaseModel):
     name: Mapped[str] = mapped_column(String(length=255))
     description: Mapped[str] = mapped_column(Text)
     status: Mapped[StatusType] = mapped_column(
-        SQLEnum(StatusType),
+        SQLEnum(StatusType), default=StatusType.CREATED
     )
