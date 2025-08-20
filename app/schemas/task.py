@@ -23,7 +23,7 @@ class TaskRequestSchema(TaskBaseSchema):
             "name": "Parcel delivery.",
             "description": "Deliver parcel to specified address.",
             "status": "Created",
-        }
+        },
     )
 
 
@@ -42,4 +42,3 @@ class TaskResponseSchema(TaskBaseSchema):
     @classmethod
     def from_dict(cls, data: dict[str, Any]):
         return TaskResponseSchema(**data)
-

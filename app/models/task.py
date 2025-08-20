@@ -17,5 +17,6 @@ class Task(BaseModel):
     name: Mapped[str] = mapped_column(String(length=255))
     description: Mapped[str] = mapped_column(Text)
     status: Mapped[StatusType] = mapped_column(
-        SQLEnum(StatusType), default=StatusType.CREATED
+        SQLEnum(StatusType),
+        default=StatusType.CREATED,
     )

@@ -1,4 +1,7 @@
 from pydantic import BaseModel
+from typing import TypeVar, Generic, Sequence
+
+TListItem = TypeVar("TListItem")
 
 
 class PaginationResponse(BaseModel):
@@ -7,6 +10,6 @@ class PaginationResponse(BaseModel):
     total: int
 
 
-class ListPaginationResponse(BaseModel):
-    items: list
+class ListPaginationResponse(BaseModel, Generic[TListItem]):
+    items: Sequence[TListItem]
     pagination: PaginationResponse
