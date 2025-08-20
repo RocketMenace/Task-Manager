@@ -12,8 +12,8 @@ class TaskStatus(str, Enum):
 
 
 class TaskBaseSchema(BaseModel):
-    name: str = Field(..., description="Task name")
-    description: str = Field(..., description="Task description")
+    name: str = Field(..., description="Task name", max_length=255, min_length=5)
+    description: str = Field(..., description="Task description", min_length=10)
     status: TaskStatus = Field(..., description="Task status")
 
 
@@ -24,6 +24,7 @@ class TaskRequestSchema(TaskBaseSchema):
             "description": "Deliver parcel to specified address.",
             "status": "Created",
         },
+        str_strip_whitespace=True,
     )
 
 
