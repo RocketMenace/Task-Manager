@@ -8,6 +8,7 @@ from faker import Faker
 from typing import Any
 from uuid import uuid4
 from datetime import datetime, timezone
+from app.schemas.task import TaskResponseSchema
 
 fake = Faker()
 
@@ -44,3 +45,8 @@ def task_response_data() -> dict[str, Any]:
         "status": "Created",
         "created_at": datetime.now(timezone.utc),
     }
+
+
+@pytest.fixture
+def task_response_instance(task_response_data: dict[str, Any]) -> TaskResponseSchema:
+    return TaskResponseSchema(**task_response_data)

@@ -2,7 +2,6 @@ from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum
 from uuid import UUID
 from datetime import datetime
-from typing import Any
 
 
 class TaskStatus(str, Enum):
@@ -40,12 +39,9 @@ class TaskResponseSchema(TaskBaseSchema):
     model_config = ConfigDict(
         from_attributes=True,
         json_schema_extra={
+            "id": "11e65113-1897-4997-9780-3168f56977c7",
             "name": "Parcel delivery.",
             "description": "Deliver parcel to specified address.",
             "status": "Created",
         },
     )
-
-    @classmethod
-    def from_dict(cls, data: dict[str, Any]):
-        return TaskResponseSchema(**data)
