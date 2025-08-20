@@ -61,3 +61,17 @@ async def get_list(
 @inject
 async def delete(task_uuid: str, service: FromDishka["TaskService"]):
     return await service.delete_task(task_uuid=task_uuid)
+
+
+@router.patch(
+    path="/{task_uuid}",
+    status_code=status.HTTP_200_OK,
+    summary="Update task.",
+)
+@inject
+async def update(
+    task_uuid: str,
+    data: TaskRequestSchema,
+    service: FromDishka["TaskService"],
+):
+    return await service.update_task(task_uuid=task_uuid, schema=data)

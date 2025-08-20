@@ -27,3 +27,6 @@ class TaskService:
 
     async def delete_task(self, task_uuid: str) -> None:
         return await self.repository.delete(uuid=task_uuid)
+
+    async def update_task(self, task_uuid: str, schema: TaskRequestSchema) -> Task:
+        return await self.repository.update(uuid=task_uuid, schema=schema)

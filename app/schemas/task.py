@@ -27,6 +27,12 @@ class TaskRequestSchema(TaskBaseSchema):
     )
 
 
+class TaskUpdateSchema(TaskBaseSchema):
+    name: str | None = Field(..., description="Task name")
+    description: str | None = Field(..., description="Task description")
+    status: TaskStatus | None = Field(..., description="Task status")
+
+
 class TaskResponseSchema(TaskBaseSchema):
     id: UUID = Field(..., description="Task id.")
     created_at: datetime = Field(..., description="Task creation date.")
