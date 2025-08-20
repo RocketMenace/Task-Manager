@@ -24,3 +24,6 @@ class TaskService:
 
     async def get_task_list(self, offset: int, limit: int) -> Sequence[Task]:
         return await self.repository.get_list(offset=offset, limit=limit)
+
+    async def delete_task(self, task_uuid: str) -> None:
+        return await self.repository.delete(uuid=task_uuid)

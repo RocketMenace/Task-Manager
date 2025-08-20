@@ -8,18 +8,6 @@ from app.schemas.pagination import ListPaginationResponse, PaginationResponse
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 
-@router.post(
-    path="/",
-    status_code=status.HTTP_201_CREATED,
-    summary="Task creation.",
-    response_model=ApiResponse[TaskResponseSchema],
-)
-@inject
-async def create(data: TaskRequestSchema, service: FromDishka["TaskService"]):
-    response = await service.create_task(schema=data)
-    return ApiResponse(data=response)
-
-
 @router.get(
     path="/{task_uuid}",
     status_code=status.HTTP_200_OK,
@@ -29,6 +17,18 @@ async def create(data: TaskRequestSchema, service: FromDishka["TaskService"]):
 @inject
 async def get(task_uuid: str, service: FromDishka["TaskService"]):
     response = await service.get_task_by_id(task_uuid=task_uuid)
+    return ApiResponse(data=response)
+
+
+@router.post(
+    path="/",
+    status_code=status.HTTP_201_CREATED,
+    summary="Task creation.",
+    response_model=ApiResponse[TaskResponseSchema],
+)
+@inject
+async def create(data: TaskRequestSchema, service: FromDishka["TaskService"]):
+    response = await service.create_task(schema=data)
     return ApiResponse(data=response)
 
 
@@ -51,3 +51,13 @@ async def get_list(
             pagination=PaginationResponse(offset=offset, limit=limit),
         ),
     )
+
+
+@router.delete(
+    path="/{task_uuid}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete task",
+)
+@inject
+async def delete(task_uuid: str, service: FromDishka["TaskService"]):
+    return await service.delete_task(task_uuid=task_uuid)

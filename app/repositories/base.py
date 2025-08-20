@@ -6,7 +6,7 @@ from typing import TypeVar, Type, Protocol, Sequence
 
 from app.models.base import BaseModel
 from pydantic import BaseModel as Schema
-from sqlalchemy import select, delete
+from sqlalchemy import select
 
 
 ModelType = TypeVar("ModelType", bound=BaseModel)
@@ -45,7 +45,7 @@ class BaseRepository(BaseRepositoryProtocol):
             try:
                 query = select(self.model).where(self.model.id == uuid)
                 result = await session.execute(query)
-                return result.one_or_none()
+                return result.scalar_one()
             except SQLAlchemyError:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -66,6 +66,15 @@ class BaseRepository(BaseRepositoryProtocol):
                 return None
 
     async def delete(self, uuid: str) -> None:
-        async with self.session:
-            query = delete(self.model).where(self.model.id == uuid)
-            await self.session.execute(query)
+        try:
+            async with self.session as session:
+                query = select(self.model).where(self.model.id == uuid)
+                result = await session.scalar(query)
+                if result:
+                    await session.delete(result)
+                    await session.commit()
+        except SQLAlchemyError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid UUID.",
+            )
