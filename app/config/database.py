@@ -33,5 +33,19 @@ class Database:
             await session.commit()
             await session.close()
 
+    @asynccontextmanager
+    async def get_test_session(self) -> AsyncGenerator[AsyncSession, Any]:
+        session: AsyncSession = self._async_session()
+        async with session:
+            async with self._async_engine.begin() as conn:
+                await conn.run_sync(database.Base.metadata.create_all)
+            transaction = await session.begin()
+            try:
+                yield session
+            finally:
+                if transaction.is_active:
+                    await transaction.rollback()
+                await session.close()
+
 
 database = Database(url=settings.db_url)
