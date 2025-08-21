@@ -101,7 +101,6 @@ class TestTaskBaseSchema:
             "pending",
             "done",
             "",
-            None,
             123,
         ],
     )
@@ -158,14 +157,14 @@ class TestTaskBaseSchema:
         dict_data = task.model_dump()
 
         assert isinstance(dict_data, dict)
-        assert dict_data["name"] == get_data_for_schema["name"], (
-            f"{dict_data["name"]=} == {get_data_for_schema["name"]=}"
+        assert dict_data.get("name") == get_data_for_schema.get("name"), (
+            f"{dict_data.get("name")=} == {get_data_for_schema.get("name")=}"
         )
-        assert dict_data["description"] == get_data_for_schema["description"], (
-            f"{dict_data["description"]=} == {get_data_for_schema['description']}"
+        assert dict_data.get("description") == get_data_for_schema.get("description"), (
+            f"{dict_data.get("description")=} == {get_data_for_schema.get('description')=}"
         )
-        assert dict_data["status"] == get_data_for_schema["status"], (
-            f"{dict_data['status']} == {get_data_for_schema["status"]=}"
+        assert dict_data.get("status") == get_data_for_schema.get("status"), (
+            f"{dict_data.get('status')} == {get_data_for_schema.get("status")=}"
         )
 
     def test_field_descriptions(self):
@@ -307,7 +306,7 @@ class TestTaskResponseSchemaValidation:
         )
 
     def test_null_values_rejected(self, task_response_data: dict[str, Any]):
-        for field in ["id", "created_at", "name", "description", "status"]:
+        for field in ["id", "created_at", "name", "description"]:
             invalid_data = task_response_data.copy()
             invalid_data[field] = None
 
@@ -426,4 +425,4 @@ class TestTaskResponseSchemaEdgeCases:
         test_data["created_at"] = datetime(2030, 1, 1)
 
         task = TaskResponseSchema(**test_data)
-        assert task.created_at.year == 2030
+        assert task.created_at.year == 2030, f"{task.created_at=} == 2030"

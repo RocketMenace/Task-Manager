@@ -14,7 +14,7 @@ class StatusType(str, Enum):
 class Task(BaseModel):
     __tablename__ = "tasks"
 
-    name: Mapped[str] = mapped_column(String(length=255))
+    name: Mapped[str] = mapped_column(String(length=255), unique=True)
     description: Mapped[str] = mapped_column(Text)
     status: Mapped[StatusType] = mapped_column(
         SQLEnum(StatusType),

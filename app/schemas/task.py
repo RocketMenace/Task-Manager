@@ -13,7 +13,7 @@ class TaskStatus(str, Enum):
 class TaskBaseSchema(BaseModel):
     name: str = Field(..., description="Task name", max_length=255, min_length=5)
     description: str = Field(..., description="Task description", min_length=10)
-    status: TaskStatus = Field(..., description="Task status")
+    status: TaskStatus | None = Field(..., description="Task status")
 
 
 class TaskRequestSchema(TaskBaseSchema):

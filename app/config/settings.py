@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     postgres_user: str = Field(default="postgres", alias="POSTGRES_USER")
     postgres_password: str = Field(default="postgres", alias="POSTGRES_PASSWORD")
     postgres_host: str = Field(default="postgres", alias="POSTGRES_HOST")
-    postgres_port: str = Field(default="5432", alias="POSTGRES_PORT")
+    postgres_port: int = Field(default=5432, alias="POSTGRES_PORT")
 
     # Database connection pool settings
     db_pool_size: int = Field(default=5, alias="DB_POOL_SIZE")

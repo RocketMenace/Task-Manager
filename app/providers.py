@@ -1,3 +1,5 @@
+from typing import AsyncGenerator
+
 from dishka import Scope, provide, Provider
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.task import TaskRepository
@@ -8,8 +10,9 @@ from app.config.database import database
 
 class SessionProvider(Provider):
     @provide(scope=Scope.REQUEST)
-    async def provide_session(self) -> AsyncSession:
-        return database.get_session()
+    async def provide_session(self) -> AsyncGenerator[AsyncSession, None]:
+        async with database.get_session() as session:
+            yield session
 
 
 class TaskRepositoryProvider(Provider):
@@ -22,3 +25,10 @@ class TaskServiceProvider(Provider):
     @provide(scope=Scope.REQUEST)
     async def provide_service(self, repository: TaskRepository) -> TaskService:
         return TaskService(repository=repository)
+
+
+class MockSessionProvider(Provider):
+    @provide(scope=Scope.REQUEST)
+    async def provide_session(self) -> AsyncGenerator[AsyncSession, None]:
+        async with database.get_test_session() as session:
+            yield session

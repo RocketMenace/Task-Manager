@@ -1,5 +1,5 @@
 # Stage 1: Builder stage for dependency installation and building
-FROM python:3.11-slim-bookworm as builder
+FROM python:3.12-slim-bookworm AS builder
 
 # Set environment variables
 ENV PYTHONFAULTHANDLER=1 \
@@ -36,7 +36,7 @@ COPY pyproject.toml poetry.lock* ./
 RUN poetry install --only main --no-root --no-interaction
 
 # Stage 2: Production stage
-FROM python:3.11-slim-bookworm as production
+FROM python:3.12-slim-bookworm AS production
 
 # Security best practices: Run as non-root user
 RUN groupadd -r appuser && useradd -r -g appuser appuser
@@ -61,8 +61,12 @@ RUN mkdir -p /app && chown appuser:appuser /app
 WORKDIR /app
 
 # Copy installed dependencies from builder stage
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Copy and make entrypoint script executable
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Switch to non-root user
 USER appuser

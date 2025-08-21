@@ -25,15 +25,15 @@ class BaseRepository(BaseRepositoryProtocol):
         self.model = model
 
     async def create(self, schema: Schema) -> Type[ModelType]:
+        instance = self.model(**schema.model_dump())
         try:
             async with self.session as session:
-                query = (
-                    insert(self.model).values(schema.model_dump()).returning(self.model)
-                )
-                result = await session.execute(query)
-                return result.scalar_one()
+                session.add(instance=instance)
+                await session.commit()
+                await session.refresh(instance=instance)
+                return instance
         except IntegrityError:
-            await self.session.rollback()
+            await session.rollback()
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Duplicate entry.",

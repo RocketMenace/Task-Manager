@@ -30,17 +30,15 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
     env_file:
       - .env
-    command: >
-      sh -c "alembic upgrade head &&
-             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    command: ["/entrypoint.sh"]
+    networks:
+      - task_manager_network
 
 volumes:
   postgres_data:
 
 networks:
-  legal_platform_network:
+  task_manager_network:
     driver: bridge
